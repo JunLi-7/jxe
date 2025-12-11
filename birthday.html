@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生日祝福</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: background-color 2s ease;
+        }
+        
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+            transition: opacity 1.5s ease;
+        }
+        
+        /* 暗色主题下的文本样式 */
+        .dark-theme .birthday-text {
+            color: #e0e0e0;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 亮色主题下的文本样式 */
+        .light-theme .birthday-text {
+            color: #2d3436;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .name {
+            font-size: 4.5rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .birthday-wish {
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 60px;
+        }
+        
+        .blessing {
+            font-size: 1.3rem;
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto 80px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .cake-container {
+            margin: 0 auto 40px;
+            position: relative;
+            width: 200px;
+            height: 150px;
+        }
+        
+        .cake {
+            width: 180px;
+            height: 60px;
+            background-color: #8B7355;
+            border-radius: 10px 10px 0 0;
+            position: absolute;
+            bottom: 0;
+            left: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cake-top {
+            width: 200px;
+            height: 40px;
+            background-color: #A67C52;
+            border-radius: 50% 50% 0 0;
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+        }
+        
+        .candle {
+            width: 12px;
+            height: 50px;
+            background-color: #4a4a4a;
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 6px 6px 0 0;
+            transition: background-color 1s ease;
+        }
+        
+        .flame {
+            width: 20px;
+            height: 30px;
+            background-color: #ff9f43;
+            border-radius: 50% 50% 20% 20%;
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 1s ease;
+            filter: blur(1px);
+            box-shadow: 0 0 15px #ff9f43, 0 0 30px #ff9f43;
+        }
+        
+        .flame.lit {
+            opacity: 1;
+            animation: flicker 1.5s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1, 0.9); }
+        }
+        
+        .light-candle-btn {
+            background-color: #4a4a4a;
+            color: #e0e0e0;
+            border: none;
+            border-radius: 50px;
+            padding: 14px 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            margin-top: 20px;
+            letter-spacing: 1px;
+        }
+        
+        .light-candle-btn:hover {
+            background-color: #5a5a5a;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 装饰元素 - 初始状态隐藏 */
+        .decoration {
+            position: fixed;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+        
+        .balloon {
+            width: 60px;
+            height: 80px;
+            border-radius: 50%;
+            position: fixed;
+            bottom: -100px;
+        }
+        
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .ribbon {
+            width: 120px;
+            height: 8px;
+            position: fixed;
+            transform: rotate(45deg);
+        }
+        
+        /* 点亮后的主题 */
+        body.light-theme {
+            background-color: #f9f7f5;
+            color: #333;
+        }
+        
+        .light-theme .decoration {
+            opacity: 1;
+        }
+        
+        .light-theme .candle {
+            background-color: #f8c471;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .name {
+                font-size: 3.5rem;
+            }
+            
+            .birthday-wish {
+                font-size: 1.5rem;
+            }
+            
+            .blessing {
+                font-size: 1.1rem;
+                padding: 0 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .name {
+                font-size: 2.8rem;
+            }
+            
+            .birthday-wish {
+                font-size: 1.3rem;
+            }
+            
+            .blessing {
+                font-size: 1rem;
+            }
+            
+            .cake-container {
+                transform: scale(0.9);
+            }
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <div class="container">
+        <div class="birthday-text">
+            <h1 class="name" id="name">小明</h1>
+            <h2 class="birthday-wish">生日快乐</h2>
+        </div>
+        
+        <p class="blessing" id="blessing">愿时光能缓，故人不散；愿你心之所向，行之所往</p>
+        
+        <div class="cake-container">
+            <div class="cake"></div>
+            <div class="cake-top"></div>
+            <div class="candle"></div>
+            <div class="flame"></div>
+        </div>
+        
+        <button class="light-candle-btn" id="lightCandleBtn">点亮蜡烛</button>
+    </div>
+    
+    <!-- 装饰元素将在点亮蜡烛后出现 -->
+    <div id="decorations"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const lightCandleBtn = document.getElementById('lightCandleBtn');
+            const flame = document.querySelector('.flame');
+            const body = document.body;
+            const decorationsContainer = document.getElementById('decorations');
+            const nameElement = document.getElementById('name');
+            const blessingElement = document.getElementById('blessing');
+            
+            // 祝福语数组 - 有文化水平且不肉麻
+            const blessings = [
+                "愿时光能缓，故人不散；愿你心之所向，行之所往",
+                "愿君长似少年时，初心不忘乐相知",
+                "愿你有诗有梦，有坦荡的远方",
+                "愿岁月风平，衣襟带花，前路浩荡，未来可期",
+                "愿你所求皆如愿，所行化坦途，多喜乐，长安宁",
+                "愿你眼中总有光芒，活成你想要的模样",
+                "愿你去往之地皆为热土，所遇之人皆为挚友",
+                "愿你有自持而节制的华丽，层出不穷的新鲜，愈炼愈飞的魔性"
+            ];
+            
+            // 随机选择一条祝福语
+            blessingElement.textContent = blessings[Math.floor(Math.random() * blessings.length)];
+            
+            // 点亮蜡烛功能
+            lightCandleBtn.addEventListener('click', function() {
+                // 切换到明亮主题
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                
+                // 点亮蜡烛火焰
+                flame.classList.add('lit');
+                
+                // 隐藏按钮
+                this.style.opacity = '0';
+                this.style.pointerEvents = 'none';
+                
+                // 创建装饰元素
+                createDecorations();
+                
+                // 添加一些交互效果
+                setTimeout(() => {
+                    createFloatingText();
+                }, 1000);
+            });
+            
+            // 创建装饰元素（气球和彩带）
+            function createDecorations() {
+                // 气球颜色
+                const balloonColors = ['#3498db', '#2ecc71', '#e74c3c', '#f1c40f', '#9b59b6', '#1abc9c', '#e67e22'];
+                
+                // 创建气球
+                for (let i = 0; i < 12; i++) {
+                    const balloon = document.createElement('div');
+                    balloon.className = 'decoration balloon';
+                    balloon.style.backgroundColor = balloonColors[i % balloonColors.length];
+                    balloon.style.left = `${Math.random() * 90 + 5}vw`;
+                    balloon.style.animationDelay = `${i * 0.3}s`;
+                    
+                    // 设置气球动画
+                    balloon.style.animation = `floatUp ${8 + Math.random() * 7}s ease-in forwards`;
+                    
+                    decorationsContainer.appendChild(balloon);
+                }
+                
+                // 创建彩带
+                for (let i = 0; i < 8; i++) {
+                    const ribbon = document.createElement('div');
+                    ribbon.className = 'decoration ribbon';
+                    
+                    // 彩带颜色
+                    const ribbonColors = ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6'];
+                    ribbon.style.backgroundColor = ribbonColors[i % ribbonColors.length];
+                    
+                    // 随机位置
+                    ribbon.style.top = `${Math.random() * 90 + 5}vh`;
+                    ribbon.style.left = `${Math.random() * 90 + 5}vw`;
+                    ribbon.style.opacity = '0.7';
+                    
+                    decorationsContainer.appendChild(ribbon);
+                }
+                
+                // 添加气球浮动动画
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes floatUp {
+                        0% {
+                            transform: translateY(0) rotate(${Math.random() * 20 - 10}deg);
+                            opacity: 0;
+                        }
+                        10% {
+                            opacity: 0.9;
+                        }
+                        100% {
+                            transform: translateY(-110vh) rotate(${Math.random() * 40 - 20}deg);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // 创建浮动祝福文本
+            function createFloatingText() {
+                const floatingTexts = ['生日快乐', '心想事成', '平安喜乐', '万事胜意'];
+                
+                for (let i = 0; i < 5; i++) {
+                    const textElement = document.createElement('div');
+                    textElement.className = 'decoration';
+                    textElement.textContent = floatingTexts[Math.floor(Math.random() * floatingTexts.length)];
+                    textElement.style.position = 'fixed';
+                    textElement.style.color = ['#3498db', '#2ecc71', '#e74c3c', '#9b59b6'][i % 4];
+                    textElement.style.fontSize = '1.5rem';
+                    textElement.style.fontWeight = 'bold';
+                    textElement.style.opacity = '0';
+                    textElement.style.left = `${Math.random() * 80 + 10}vw`;
+                    textElement.style.top = `${Math.random() * 80 + 10}vh`;
+                    textElement.style.zIndex = '2';
+                    textElement.style.pointerEvents = 'none';
+                    
+                    document.body.appendChild(textElement);
+                    
+                    // 文本浮现动画
+                    setTimeout(() => {
+                        textElement.style.transition = 'opacity 2s ease, transform 6s ease';
+                        textElement.style.opacity = '0.7';
+                        textElement.style.transform = `translateY(-${30 + Math.random() * 50}px) rotate(${Math.random() * 20 - 10}deg)`;
+                        
+                        // 淡出并移除
+                        setTimeout(() => {
+                            textElement.style.opacity = '0';
+                            setTimeout(() => {
+                                if (textElement.parentNode) {
+                                    textElement.parentNode.removeChild(textElement);
+                                }
+                            }, 2000);
+                        }, 4000);
+                    }, i * 500);
+                }
+            }
+            
+            // 添加一些初始的视觉效果
+            window.addEventListener('load', function() {
+                // 名字轻微闪烁效果
+                let nameOpacity = 1;
+                const nameInterval = setInterval(() => {
+                    nameOpacity = nameOpacity === 1 ? 0.9 : 1;
+                    nameElement.style.opacity = nameOpacity;
+                }, 2000);
+                
+                // 点击蜡烛区域也可以点亮蜡烛
+                document.querySelector('.cake-container').addEventListener('click', function() {
+                    if (!flame.classList.contains('lit')) {
+                        lightCandleBtn.click();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
